@@ -19,7 +19,8 @@ class Chat extends React.Component {
     });
 
     const addMessage = data => {
-      console.log(data);
+      console.log(this.state.messages.length);
+      if (this.state.messages.length > 15) this.state.messages.splice(0,5);
       this.setState({messages: [...this.state.messages, data]});
       console.log(this.state.messages);
     };
@@ -31,6 +32,17 @@ class Chat extends React.Component {
         message: this.state.message
       });
       this.setState({message: ''}); //clear input
+    };
+
+    this.sendMessageByKeyInput = ev => {
+      const kc = ev.which || ev.keyCode;
+      if (kc !== 13) return;
+
+      this.socket.emit('SEND_MESSAGE', {
+        author: this.state.username,
+        message: this.state.message
+      });
+      this.setState({message: ''});
     };
   }
 
@@ -54,7 +66,7 @@ class Chat extends React.Component {
               <div className="card-footer">
                 <input type="text" placeholder="Username" className="form-control" value={this.state.username} onChange={ev => this.setState({username: ev.target.value})} />
                 <br />
-                <input type="text" placeholder="Message" className="form-control" value={this.state.message} onChange={ev => this.setState({message: ev.target.value})} />
+                <input type="text" placeholder="Message" className="form-control" value={this.state.message} onChange={ev => this.setState({message: ev.target.value})} onKeyPress={this.sendMessageByKeyInput} />
                 <br />
                 <button className="btn btn-primary form-control" onClick={this.sendMessage}>Send</button>
               </div>
