@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { Card, CardTitle, CardText } from 'material-ui/Card';
 
 const Dashboard = ({ secretData }) => (
@@ -8,8 +9,8 @@ const Dashboard = ({ secretData }) => (
   </Card>
 );
 
-// Dashboard.propTypes = {
-//   secretData: PropTypes.string.isRequired
-// };
+Dashboard.propTypes = {
+  secretData: PropTypes.string.isRequired
+};
 
 export default Dashboard;

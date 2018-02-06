@@ -11,5 +11,5 @@ module.exports.connect = (uri) => {
   });
 
   // load models
-  require('./users');
+  require('./user');
 }
