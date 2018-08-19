@@ -20,7 +20,7 @@ a:hover {
 
 .top-bar {
   padding: 10px 15px;
-  margin-bottom: 50px;
+  margin-bottom: 20px;
 }
 .top-bar::after {
   content: '';
@@ -45,7 +45,7 @@ a:hover {
 .container {
   margin: 0 auto;
   text-align: center;
-  width: 700px;
+  width: 100%;
 }
 
 .card-heading {

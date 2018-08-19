@@ -23,6 +23,7 @@ class LoginPage extends React.Component {
       errors: {},
       successMessage,
       user: {
+        name: '',
         email: '',
         password: ''
       }
@@ -60,6 +61,13 @@ class LoginPage extends React.Component {
         });
 
         console.log('Valid form');
+        console.log(xhr.response);
+        const user = this.state.user;
+        user['name'] = xhr.response.user.name;
+        this.setState({
+            user
+        });
+        console.log(this.state);
 
         //save the token
         Auth.authenticateUser(xhr.response.token);

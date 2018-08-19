@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 module.exports.connect = (uri) => {
-  mongoose.connect(uri);
+  mongoose.connect(uri, {useNewUrlParser: true});
   // plug in promise library:
   mongoose.Promise = global.Promise;
 

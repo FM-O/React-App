@@ -1,6 +1,7 @@
 import React from 'react';
 import Auth from '../modules/Auth';
 import Dashboard from '../components/Dashboard.jsx';
+import ChatPage from './ChatPage.jsx';
 
 
 class DashboardPage extends React.Component {
@@ -11,7 +12,8 @@ class DashboardPage extends React.Component {
      super(props);
 
      this.state = {
-       secretData: ''
+       secretData: '',
+       username: ''
      };
    }
    /**
@@ -27,7 +29,8 @@ class DashboardPage extends React.Component {
      xhr.addEventListener('load', () => {
        if (xhr.status === 200) {
          this.setState({
-           secretData: xhr.response.message
+           secretData: xhr.response.message,
+           username: xhr.response.username
          });
        }
      });
@@ -38,7 +41,12 @@ class DashboardPage extends React.Component {
    * Render the component.
    */
    render() {
-     return (<Dashboard secretData={this.state.secretData} />);
+     return (
+         <div>
+         <Dashboard secretData={this.state.secretData} />
+         <ChatPage username={this.state.username} />
+         </div>
+     );
    }
 }
 
