@@ -43838,7 +43838,7 @@ var ChatPage = function (_React$Component) {
     };
 
     //replace by the current host IP
-    _this.socket = (0, _socket2.default)('192.168.0.18:3000');
+    _this.socket = (0, _socket2.default)('10.53.37.176:3000');
 
     _this.socket.on('RECEIVE_MESSAGE', function (data) {
       addMessage(data);

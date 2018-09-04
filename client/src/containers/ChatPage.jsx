@@ -17,7 +17,7 @@ class ChatPage extends React.Component {
     };
 
     //replace by the current host IP
-    this.socket = io('192.168.0.18:3000');
+    this.socket = io('10.53.37.176:3000');
 
     this.socket.on('RECEIVE_MESSAGE', data => {
       addMessage(data);
