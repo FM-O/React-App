@@ -47,9 +47,11 @@ const server = app.listen(3000, () => {
 const io = socket(server);
 
 io.on('connection', (socket) => {
-    console.log(socket.id);
-
     socket.on('SEND_MESSAGE', function (data) {
       io.emit('RECEIVE_MESSAGE', data);
+    });
+
+    socket.on('NEW_CONNECTION', (username) => {
+        io.emit('NEW_USER_CONNECTED', username);
     });
 });

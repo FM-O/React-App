@@ -42,6 +42,54 @@ a:hover {
 .card-heading {
   padding: 16px; }
 
+.card-body {
+  display: flex;
+  flex-wrap: wrap; }
+  .card-body .card-title {
+    width: 100%; }
+  .card-body .messages {
+    width: 70%;
+    text-align: left;
+    max-height: 280px;
+    overflow: auto; }
+    .card-body .messages .message {
+      padding: 5px 5px 5px 15px; }
+      .card-body .messages .message:nth-child(2n) {
+        background: #f1f1f1; }
+      .card-body .messages .message__author {
+        color: #a9a7a7; }
+    .card-body .messages .server_message {
+      background: blue;
+      color: white;
+      padding: 5px; }
+  .card-body .users_list {
+    background: #1f1f1f;
+    width: 30%;
+    color: white; }
+    .card-body .users_list__title {
+      margin: 0;
+      text-align: center; }
+    .card-body .users_list__users {
+      margin-top: 15px;
+      background: lightgreen;
+      padding: 5px 0; }
+
+.popover__content {
+  padding: 10px 15px;
+  color: #FFA000;
+  font-weight: bold; }
+
+.card-footer {
+  position: absolute;
+  bottom: 0;
+  padding: 0 15px;
+  width: calc(100% - 30px); }
+  .card-footer button {
+    position: absolute;
+    right: 15px;
+    bottom: 15px;
+    cursor: pointer; }
+
 .field-line, .button-line {
   padding: 16px; }
 

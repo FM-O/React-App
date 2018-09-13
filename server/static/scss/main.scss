@@ -52,6 +52,79 @@ a:hover {
   padding: 16px;
 }
 
+.card-body {
+    display: flex;
+    flex-wrap: wrap;
+
+    .card-title {
+        width: 100%;
+    }
+
+    .messages {
+        width: 70%;
+        text-align: left;
+        max-height: 280px;
+        overflow: auto;
+
+        .message {
+            padding: 5px 5px 5px 15px;
+
+            &:nth-child(2n) {
+                background: #f1f1f1;
+            }
+
+            &__author {
+                color: #a9a7a7;
+            }
+        }
+
+        .server_message {
+            background: blue;
+            color: white;
+            padding: 5px;
+        }
+    }
+
+    .users_list {
+        background: #1f1f1f;
+        width: 30%;
+        color: white;
+
+        &__title {
+            margin: 0;
+            text-align: center;
+        }
+
+        &__users {
+            margin-top: 15px;
+            background: lightgreen;
+            padding: 5px 0;
+        }
+    }
+}
+
+.popover{
+    &__content {
+        padding: 10px 15px;
+        color: #FFA000;
+        font-weight: bold;
+    }
+}
+
+.card-footer {
+    position: absolute;
+    bottom: 0;
+    padding: 0 15px;
+    width: calc(100% - 30px);
+
+    button {
+        position: absolute;
+        right: 15px;
+        bottom: 15px;
+        cursor: pointer;
+    }
+}
+
 .field-line, .button-line {
   padding: 16px;
 }

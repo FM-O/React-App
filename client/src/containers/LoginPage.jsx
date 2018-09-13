@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Auth from '../modules/Auth';
 import LoginForm from '../components/LoginForm.jsx';
+import io from 'socket.io-client';
 
 class LoginPage extends React.Component {
   /**
@@ -71,7 +72,8 @@ class LoginPage extends React.Component {
 
         //save the token
         Auth.authenticateUser(xhr.response.token);
-
+        // this.socket = io('10.53.37.205:3000');
+        // this.socket.emit("NEW_CONNECTION", xhr.response.user.name);
         //change the current url to /
         this.context.router.replace('/');
       } else {
