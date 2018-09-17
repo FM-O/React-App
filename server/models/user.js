@@ -8,6 +8,7 @@ const UserSchema = new mongoose.Schema({
     type: String,
     index: {unique: true}
   },
+  online: Boolean,
   password: String,
   name: String
 });

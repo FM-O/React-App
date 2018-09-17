@@ -39,6 +39,12 @@ module.exports = new PassportLocalStrategy({
         return done(error);
       }
 
+      // If nothing went wrong til now update online status
+      user.online = true;
+      user.save((error) => {
+          if (error) return done(error);
+      });
+
       const payload = {
         sub: user._id
       };

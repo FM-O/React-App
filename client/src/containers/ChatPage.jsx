@@ -1,5 +1,6 @@
 import React from 'react';
 import Chat from '../components/Chat.jsx';
+import Auth from '../modules/Auth';
 import io from 'socket.io-client';
 
 
@@ -28,9 +29,9 @@ class ChatPage extends React.Component {
                 width: '100%'
             }
         };
-
+        //// WARNING: second instance of IO (already defined in LoginPage)
         //replace by the current host IP
-        this.socket = io('10.53.37.205:3000');
+        this.socket = io('192.168.0.19:3000');
 
         this.socket.on('RECEIVE_MESSAGE', data => {
             addMessage(data);
@@ -42,10 +43,11 @@ class ChatPage extends React.Component {
                 type: 'server-message'
             });
             addUserToList({
-                username: username
+                name: username
             });
         });
 
+        // Keeping this method in order to avoid a new request to Mongo (performances)
         const addUserToList = user => {
             this.setState({usersList: [...this.state.usersList, user]});
         };
@@ -112,14 +114,27 @@ class ChatPage extends React.Component {
                 anchorEl: document.getElementById('message_input')
             }
         });
+
+        const xhr = new XMLHttpRequest();
+        xhr.open('get', '/api/getonlineusers');
+        xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+        // set the authorization HTTP header
+        xhr.setRequestHeader('Authorization', `bearer ${Auth.getToken()}`);
+        xhr.responseType = 'json';
+        xhr.addEventListener('load', () => {
+          if (xhr.status === 200) {
+            this.setState({
+                usersList: xhr.response.usersList
+            });
+          }
+        });
+        xhr.send();
     }
 
     componentWillReceiveProps(nextProps) {
         this.setState({
             username: nextProps.username
         });
-
-        this.socket.emit("NEW_CONNECTION", nextProps.username);
     }
 
     /**

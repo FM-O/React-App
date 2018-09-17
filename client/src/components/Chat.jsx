@@ -31,7 +31,7 @@ const Chat = ({popoverProps, styles, users, message, messages, onChangeInput, on
                     <div className="users_list__users">
                         {users.map((user, index) => {
                           return (
-                            <div className='user' key={index}>{user.username}</div>
+                            <div className='user' key={index}>{user.name}</div>
                           )
                         })}
                     </div>

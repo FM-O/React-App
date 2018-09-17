@@ -61,19 +61,16 @@ class LoginPage extends React.Component {
           errors: {}
         });
 
-        console.log('Valid form');
-        console.log(xhr.response);
         const user = this.state.user;
         user['name'] = xhr.response.user.name;
         this.setState({
             user
         });
-        console.log(this.state);
 
         //save the token
         Auth.authenticateUser(xhr.response.token);
-        // this.socket = io('10.53.37.205:3000');
-        // this.socket.emit("NEW_CONNECTION", xhr.response.user.name);
+        this.socket = io('192.168.0.19:3000');
+        this.socket.emit("NEW_CONNECTION", xhr.response.user.name);
         //change the current url to /
         this.context.router.replace('/');
       } else {

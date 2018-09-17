@@ -9,6 +9,12 @@ router.get('/dashboard', (req, res) => {
   });
 });
 
+router.get('/getonlineusers', (req, res) => {
+  res.status(200).json({
+    usersList: res.users
+  });
+});
+
 // TODO: call database with email as identifier or object ID
 // then return the username (eventually all data needed too to chat component)
 
