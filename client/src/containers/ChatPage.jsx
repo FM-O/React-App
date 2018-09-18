@@ -47,9 +47,25 @@ class ChatPage extends React.Component {
             });
         });
 
+        this.socket.on('USER_DISCONNECTED', username => {
+            addMessage({
+                message: username + ' vient de se déconnecter',
+                type: 'server-message'
+            });
+            removeUserFromList(username);
+        });
+
         // Keeping this method in order to avoid a new request to Mongo (performances)
         const addUserToList = user => {
             this.setState({usersList: [...this.state.usersList, user]});
+        };
+
+        const removeUserFromList = user => {
+            const matching = this.state.usersList.filter((entry) => {
+                return entry.name !== user;
+            });
+
+            this.setState({usersList: matching});
         };
 
         const addMessage = data => {

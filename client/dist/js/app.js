@@ -39644,7 +39644,13 @@ var _Auth = __webpack_require__(57);
 
 var _Auth2 = _interopRequireDefault(_Auth);
 
+var _socket = __webpack_require__(139);
+
+var _socket2 = _interopRequireDefault(_socket);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var socket = (0, _socket2.default)('192.168.0.19:3000');
 
 var routes = {
   // Base component (wrapper for the whole Application)
@@ -39667,9 +39673,21 @@ var routes = {
   }, {
     path: '/logout',
     onEnter: function onEnter(nextState, replace) {
-      _Auth2.default.deauthenticateUser();
+      var xhr = new XMLHttpRequest();
+      xhr.open('get', '/api/logout');
+      xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+      // set the authorization HTTP header
+      xhr.setRequestHeader('Authorization', 'bearer ' + _Auth2.default.getToken());
+      xhr.responseType = 'json';
+      xhr.addEventListener('load', function () {
+        if (xhr.status === 200) {
+          socket.emit('USER_DISCONNECT', xhr.response.name);
+        }
+      });
+      xhr.send();
 
       // change the current URL to /
+      _Auth2.default.deauthenticateUser();
       replace('/');
     }
   }]
@@ -44161,9 +44179,25 @@ var ChatPage = function (_React$Component) {
             });
         });
 
+        _this.socket.on('USER_DISCONNECTED', function (username) {
+            addMessage({
+                message: username + ' vient de se déconnecter',
+                type: 'server-message'
+            });
+            removeUserFromList(username);
+        });
+
         // Keeping this method in order to avoid a new request to Mongo (performances)
         var addUserToList = function addUserToList(user) {
             _this.setState({ usersList: [].concat(_toConsumableArray(_this.state.usersList), [user]) });
+        };
+
+        var removeUserFromList = function removeUserFromList(user) {
+            var matching = _this.state.usersList.filter(function (entry) {
+                return entry.name !== user;
+            });
+
+            _this.setState({ usersList: matching });
         };
 
         var addMessage = function addMessage(data) {

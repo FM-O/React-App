@@ -27,12 +27,16 @@ passport.use('local-login', localLoginStrategy);
 // Pass the authentication checker middleware
 const authCheckMiddleware = require('./server/middleware/auth-check');
 const getOnlineUsersMiddleware = require('./server/middleware/get-online-users');
+const setOfflineUserMiddleware = require('./server/middleware/set-user-offline');
+
 app.use('/api', authCheckMiddleware);
 app.use('/api/getonlineusers', getOnlineUsersMiddleware);
+app.use('/api/logout', setOfflineUserMiddleware);
 
 //routes
 const authRoutes = require('./server/routes/auth');
 const apiRoutes = require('./server/routes/api');
+
 app.use('/auth', authRoutes);
 app.use('/api', apiRoutes);
 
@@ -51,6 +55,14 @@ const io = socket(server);
 io.on('connection', (socket) => {
     socket.on('SEND_MESSAGE', function (data) {
       io.emit('RECEIVE_MESSAGE', data);
+    });
+
+    socket.on('USER_DISCONNECT', (username) => {
+        io.emit('USER_DISCONNECTED', username);
+    });
+
+    socket.on('disconnect', () => {
+        console.log(socket);
     });
 
     socket.on('NEW_CONNECTION', (username) => {
