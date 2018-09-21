@@ -14,7 +14,8 @@ module.exports = new PassportLocalStrategy({
 }, (req, email, password, done) => {
   const userData = {
     email: email.trim(),
-    password: password.trim()
+    password: password.trim(),
+    socketId: req.body.socketId
   };
 
   // find a user by email address
@@ -38,6 +39,9 @@ module.exports = new PassportLocalStrategy({
 
         return done(error);
       }
+
+      // If nothing went wrong til now update socketId
+      user.socketId = userData.socketId;
 
       // If nothing went wrong til now update online status
       user.online = true;

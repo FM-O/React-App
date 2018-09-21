@@ -19,6 +19,8 @@ class LoginPage extends React.Component {
       localStorage.removeItem('successMessage');
     }
 
+    this.socket = io('10.53.37.203:3000');
+
     // set the initial component state
     this.state = {
       errors: {},
@@ -45,7 +47,8 @@ class LoginPage extends React.Component {
 
     const email = encodeURIComponent(this.state.user.email);
     const password = encodeURIComponent(this.state.user.password);
-    const formData = `email=${email}&password=${password}`;
+    const socketId = encodeURIComponent(this.socket.id);
+    const formData = `email=${email}&password=${password}&socketId=${socketId}`;
 
     // create an AJAX request
     const xhr = new XMLHttpRequest();
@@ -69,7 +72,6 @@ class LoginPage extends React.Component {
 
         //save the token
         Auth.authenticateUser(xhr.response.token);
-        this.socket = io('192.168.0.19:3000');
         this.socket.emit("NEW_CONNECTION", xhr.response.user.name);
         //change the current url to /
         this.context.router.replace('/');

@@ -15,6 +15,7 @@ class ChatPage extends React.Component {
 
         this.state = {
             username: props.username,
+            socketId: props.socketId,
             usersList: [],
             message: '',
             messages: [],
@@ -31,29 +32,55 @@ class ChatPage extends React.Component {
         };
         //// WARNING: second instance of IO (already defined in LoginPage)
         //replace by the current host IP
-        this.socket = io('192.168.0.19:3000');
+        this.bindEvents = (nextProps) => {
+            console.log(nextProps);
+            this.socket = io('10.53.37.203:3000', {query: `socketId=${nextProps.socketId}&chatpage=true`});
 
-        this.socket.on('RECEIVE_MESSAGE', data => {
-            addMessage(data);
-        });
+            this.socket.on('connect',() => {
+                const xhr = new XMLHttpRequest();
+                const data = `socketId=${this.socket.id}`;
+                xhr.open('post', '/api/savesocket');
+                xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+                // set the authorization HTTP header
+                xhr.setRequestHeader('Authorization', `bearer ${Auth.getToken()}`);
+                xhr.responseType = 'json';
+                xhr.addEventListener('load', () => {
+                  if (xhr.status === 200) {
+                    setInterval(() => {
+                        console.log("test");
+                        this.socket.emit('HERE', this.socket.id);
+                    }, 5000);
+                  }
+                });
+                xhr.send(data);
+            });
 
-        this.socket.on('NEW_USER_CONNECTED', username => {
-            addMessage({
-                message: username + ' vient de se connecter',
-                type: 'server-message'
+            this.socket.on('RECEIVE_MESSAGE', data => {
+                addMessage(data);
             });
-            addUserToList({
-                name: username
-            });
-        });
 
-        this.socket.on('USER_DISCONNECTED', username => {
-            addMessage({
-                message: username + ' vient de se déconnecter',
-                type: 'server-message'
+            this.socket.on('NEW_USER_CONNECTED', username => {
+                addMessage({
+                    message: username + ' vient de se connecter',
+                    type: 'server-message'
+                });
+                addUserToList({
+                    name: username
+                });
             });
-            removeUserFromList(username);
-        });
+
+            this.socket.on('DISCONNECT_ME', () => {
+                console.log('DISCO!!!');
+            });
+
+            this.socket.on('USER_DISCONNECTED', username => {
+                addMessage({
+                    message: username + ' vient de se déconnecter',
+                    type: 'server-message'
+                });
+                removeUserFromList(username);
+            });
+        }
 
         // Keeping this method in order to avoid a new request to Mongo (performances)
         const addUserToList = user => {
@@ -149,8 +176,11 @@ class ChatPage extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         this.setState({
-            username: nextProps.username
+            username: nextProps.username,
+            socketId: nextProps.socketId
         });
+
+        this.bindEvents(nextProps);
     }
 
     /**

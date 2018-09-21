@@ -20,7 +20,7 @@ app.use(passport.initialize());
 
 // Load passport strategies
 const localSignupStrategy = require('./server/passport/local-signup');
-const localLoginStrategy  = require('./server/passport/local-login');
+const localLoginStrategy = require('./server/passport/local-login');
 passport.use('local-signup', localSignupStrategy);
 passport.use('local-login', localLoginStrategy);
 
@@ -28,9 +28,11 @@ passport.use('local-login', localLoginStrategy);
 const authCheckMiddleware = require('./server/middleware/auth-check');
 const getOnlineUsersMiddleware = require('./server/middleware/get-online-users');
 const setOfflineUserMiddleware = require('./server/middleware/set-user-offline');
+const saveSocketMiddleware = require('./server/middleware/save-socket');
 
 app.use('/api', authCheckMiddleware);
 app.use('/api/getonlineusers', getOnlineUsersMiddleware);
+app.use('/api/savesocket', saveSocketMiddleware);
 app.use('/api/logout', setOfflineUserMiddleware);
 
 //routes
@@ -39,6 +41,10 @@ const apiRoutes = require('./server/routes/api');
 
 app.use('/auth', authRoutes);
 app.use('/api', apiRoutes);
+
+//services
+const revokeUserService = require('./server/services/revoke-user');
+app.use('/service/revoke-user', revokeUserService);
 
 //specific routing
 app.get("/*", (req, res) => {
@@ -52,17 +58,35 @@ const server = app.listen(3000, () => {
 
 const io = socket(server);
 
-io.on('connection', (socket) => {
+io.on('connection', (socket, data) => {
+    let TIMEOUT = null;
+
     socket.on('SEND_MESSAGE', function (data) {
-      io.emit('RECEIVE_MESSAGE', data);
+        io.emit('RECEIVE_MESSAGE', data);
     });
 
-    socket.on('USER_DISCONNECT', (username) => {
-        io.emit('USER_DISCONNECTED', username);
+    if (socket.handshake.query.chatpage === 'true') {
+        TIMEOUT = setTimeout(() => {
+            console.log("END");
+        }, 10000);
+    }
+
+    socket.on('HERE', (data) => {
+        console.log(data);
+        clearTimeout(TIMEOUT);
+        TIMEOUT = setTimeout(() => {
+            console.log("END");
+        }, 10000);
     });
 
-    socket.on('disconnect', () => {
-        console.log(socket);
+    // console.log(socket.handshake.query);
+    if (io.sockets.connected[socket.handshake.query.socketId] != undefined) {
+        io.sockets.connected[socket.handshake.query.socketId].disconnect();
+    }
+
+    socket.on('USER_DISCONNECT', (data) => {
+        io.emit('USER_DISCONNECTED', data.username);
+        io.to(data.socketId).emit('DISCONNECT_ME');
     });
 
     socket.on('NEW_CONNECTION', (username) => {

@@ -12,6 +12,7 @@ class DashboardPage extends React.Component {
      super(props);
 
      this.state = {
+       socketId: null,
        secretData: '',
        username: ''
      };
@@ -29,6 +30,7 @@ class DashboardPage extends React.Component {
      xhr.addEventListener('load', () => {
        if (xhr.status === 200) {
          this.setState({
+           socketId: xhr.response.socketId,
            secretData: xhr.response.message,
            username: xhr.response.username
          });
@@ -44,7 +46,7 @@ class DashboardPage extends React.Component {
      return (
          <div>
          <Dashboard secretData={this.state.secretData} />
-         <ChatPage username={this.state.username} />
+         <ChatPage username={this.state.username} socketId={this.state.socketId} />
          </div>
      );
    }

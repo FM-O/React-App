@@ -6,8 +6,6 @@ import SignUpPage from './containers/SignUpPage.jsx';
 import Auth from './modules/Auth';
 import io from 'socket.io-client';
 
-const socket = io('192.168.0.19:3000');
-
 const routes = {
   // Base component (wrapper for the whole Application)
   component: Base,
@@ -36,18 +34,20 @@ const routes = {
     {
       path: '/logout',
       onEnter: (nextState, replace) => {
+        const socket = io('10.53.37.203:3000');
         const xhr = new XMLHttpRequest();
-        xhr.open('get', '/api/logout');
-        xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+        const formData = `socketId=${socket.id}`;
+        xhr.open('POST', '/api/logout', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
         // set the authorization HTTP header
         xhr.setRequestHeader('Authorization', `bearer ${Auth.getToken()}`);
         xhr.responseType = 'json';
         xhr.addEventListener('load', () => {
           if (xhr.status === 200) {
-            socket.emit('USER_DISCONNECT', xhr.response.name);
+            socket.emit('USER_DISCONNECT', {username: xhr.response.name, socketId: xhr.response.socketId});
           }
         });
-        xhr.send();
+        xhr.send(formData);
 
         // change the current URL to /
         Auth.deauthenticateUser();

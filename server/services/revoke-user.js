@@ -1,11 +1,13 @@
 const jwt = require('jsonwebtoken');
 const User = require('mongoose').model('User');
 const config = require('../../config');
+const express = require('express');
 
+const router = new express.Router();
 /**
- *  The Auth Checker middleware function.
+ *  Revoke user token function
  */
-module.exports = (req, res, next) => {
+revokeUserToken = (req, res, next) => {
   if (!req.headers.authorization) {
     return res.status(401).end();
   }
@@ -23,13 +25,12 @@ module.exports = (req, res, next) => {
 
     // check if a user exists
     return User.findById(userId, (userErr, user) => {
-        // If nothing went wrong til now update online status
-        user.online = false;
+        // If nothing went wrong til now update socket id
+        user.socketId = socketId;
         user.save((error) => {
             if (error) return done(error);
         });
-        res.user = user;
-        res.socketId = socketId;
+
         if (userErr || !user) {
             return res.status(401).end();
         }
@@ -38,3 +39,11 @@ module.exports = (req, res, next) => {
     });
   });
 };
+
+router.post('/revoke-user', (req, res, next) => {
+    return revokeUserToken((username) => {
+        res.status(200).json({
+          name: username,
+        });
+    })(req, res, next);
+});

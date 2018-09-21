@@ -23,13 +23,12 @@ module.exports = (req, res, next) => {
 
     // check if a user exists
     return User.findById(userId, (userErr, user) => {
-        // If nothing went wrong til now update online status
-        user.online = false;
+        // If nothing went wrong til now update socket id
+        user.socketId = socketId;
         user.save((error) => {
             if (error) return done(error);
         });
-        res.user = user;
-        res.socketId = socketId;
+
         if (userErr || !user) {
             return res.status(401).end();
         }
