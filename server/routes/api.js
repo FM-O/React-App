@@ -27,11 +27,4 @@ router.post('/logout', (req, res) => {
     });
 });
 
-
-// TODO: call database with email as identifier or object ID
-// then return the username (eventually all data needed too to chat component)
-
-// The other way consists in registering the username in the localStorage
-// via a new module (client side) named user
-
 module.exports = router;

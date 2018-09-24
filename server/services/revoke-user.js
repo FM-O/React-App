@@ -1,20 +1,17 @@
 const jwt = require('jsonwebtoken');
 const User = require('mongoose').model('User');
 const config = require('../../config');
-const express = require('express');
 
-const router = new express.Router();
 /**
  *  Revoke user token function
  */
-revokeUserToken = (req, res, next) => {
+module.exports = (req, res, next) => {
   if (!req.headers.authorization) {
     return res.status(401).end();
   }
 
   // get the last part from a authorization header string like "bearer token-value"
   const token = req.headers.authorization.split(' ')[1];
-  const socketId = req.body.socketId;
 
   // decode the token using a secret key-phrase
   return jwt.verify(token, config.jwtSecret, (err, decoded) => {
@@ -25,11 +22,7 @@ revokeUserToken = (req, res, next) => {
 
     // check if a user exists
     return User.findById(userId, (userErr, user) => {
-        // If nothing went wrong til now update socket id
-        user.socketId = socketId;
-        user.save((error) => {
-            if (error) return done(error);
-        });
+        res.send(user.name);
 
         if (userErr || !user) {
             return res.status(401).end();
@@ -39,11 +32,3 @@ revokeUserToken = (req, res, next) => {
     });
   });
 };
-
-router.post('/revoke-user', (req, res, next) => {
-    return revokeUserToken((username) => {
-        res.status(200).json({
-          name: username,
-        });
-    })(req, res, next);
-});

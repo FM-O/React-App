@@ -34,7 +34,7 @@ const routes = {
     {
       path: '/logout',
       onEnter: (nextState, replace) => {
-        const socket = io('10.53.37.203:3000');
+        const socket = io('192.168.0.19:3000');
         const xhr = new XMLHttpRequest();
         const formData = `socketId=${socket.id}`;
         xhr.open('POST', '/api/logout', true);

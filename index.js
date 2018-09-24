@@ -3,6 +3,7 @@ const socket = require('socket.io');
 const bodyParser = require('body-parser');
 const passport = require('passport');
 const config = require('./config');
+const request = require('request');
 
 // Connect to the database and load models
 require('./server/models').connect(config.dbUri);
@@ -47,9 +48,10 @@ const revokeUserService = require('./server/services/revoke-user');
 app.use('/service/revoke-user', revokeUserService);
 
 //specific routing
-app.get("/*", (req, res) => {
-  res.sendFile(__dirname + '/server/static/index.html');
-});
+// app.get("/*", (req, res) => {
+//     console.log("ok1");
+//   res.send(__dirname + '/server/static/index.html');
+// });
 
 // start the server
 const server = app.listen(3000, () => {
@@ -75,11 +77,13 @@ io.on('connection', (socket, data) => {
         console.log(data);
         clearTimeout(TIMEOUT);
         TIMEOUT = setTimeout(() => {
-            console.log("END");
+            request.get('http://192.168.0.19:3000/service/revoke-user', {json: true, headers: {'Authorization': `bearer ${data.token}`}}, (err, res, body) => {
+                if (err) { return console.log("BIGERROR : " + err); }
+                console.log(body);
+            });
         }, 10000);
     });
 
-    // console.log(socket.handshake.query);
     if (io.sockets.connected[socket.handshake.query.socketId] != undefined) {
         io.sockets.connected[socket.handshake.query.socketId].disconnect();
     }

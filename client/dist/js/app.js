@@ -39671,7 +39671,7 @@ var routes = {
   }, {
     path: '/logout',
     onEnter: function onEnter(nextState, replace) {
-      var socket = (0, _socket2.default)('10.53.37.203:3000');
+      var socket = (0, _socket2.default)('192.168.0.19:3000');
       var xhr = new XMLHttpRequest();
       var formData = 'socketId=' + socket.id;
       xhr.open('POST', '/api/logout', true);
@@ -44167,8 +44167,7 @@ var ChatPage = function (_React$Component) {
         //// WARNING: second instance of IO (already defined in LoginPage)
         //replace by the current host IP
         _this.bindEvents = function (nextProps) {
-            console.log(nextProps);
-            _this.socket = (0, _socket2.default)('10.53.37.203:3000', { query: 'socketId=' + nextProps.socketId + '&chatpage=true' });
+            _this.socket = (0, _socket2.default)('192.168.0.19:3000', { query: 'socketId=' + nextProps.socketId + '&chatpage=true' });
 
             _this.socket.on('connect', function () {
                 var xhr = new XMLHttpRequest();
@@ -44181,8 +44180,7 @@ var ChatPage = function (_React$Component) {
                 xhr.addEventListener('load', function () {
                     if (xhr.status === 200) {
                         setInterval(function () {
-                            console.log("test");
-                            _this.socket.emit('HERE', _this.socket.id);
+                            _this.socket.emit('HERE', { socket: _this.socket.id, token: _Auth2.default.getToken() });
                         }, 5000);
                     }
                 });
@@ -44201,10 +44199,6 @@ var ChatPage = function (_React$Component) {
                 addUserToList({
                     name: username
                 });
-            });
-
-            _this.socket.on('DISCONNECT_ME', function () {
-                console.log('DISCO!!!');
             });
 
             _this.socket.on('USER_DISCONNECTED', function (username) {
@@ -52644,7 +52638,7 @@ var LoginPage = function (_React$Component) {
       localStorage.removeItem('successMessage');
     }
 
-    _this.socket = (0, _socket2.default)('10.53.37.203:3000');
+    _this.socket = (0, _socket2.default)('192.168.0.19:3000');
 
     // set the initial component state
     _this.state = {

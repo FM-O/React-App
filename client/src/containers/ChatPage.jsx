@@ -33,8 +33,7 @@ class ChatPage extends React.Component {
         //// WARNING: second instance of IO (already defined in LoginPage)
         //replace by the current host IP
         this.bindEvents = (nextProps) => {
-            console.log(nextProps);
-            this.socket = io('10.53.37.203:3000', {query: `socketId=${nextProps.socketId}&chatpage=true`});
+            this.socket = io('192.168.0.19:3000', {query: `socketId=${nextProps.socketId}&chatpage=true`});
 
             this.socket.on('connect',() => {
                 const xhr = new XMLHttpRequest();
@@ -47,8 +46,7 @@ class ChatPage extends React.Component {
                 xhr.addEventListener('load', () => {
                   if (xhr.status === 200) {
                     setInterval(() => {
-                        console.log("test");
-                        this.socket.emit('HERE', this.socket.id);
+                        this.socket.emit('HERE', {socket: this.socket.id, token: Auth.getToken()});
                     }, 5000);
                   }
                 });
@@ -67,10 +65,6 @@ class ChatPage extends React.Component {
                 addUserToList({
                     name: username
                 });
-            });
-
-            this.socket.on('DISCONNECT_ME', () => {
-                console.log('DISCO!!!');
             });
 
             this.socket.on('USER_DISCONNECTED', username => {
