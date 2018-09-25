@@ -22,13 +22,14 @@ module.exports = (req, res, next) => {
 
     // check if a user exists
     return User.findById(userId, (userErr, user) => {
-        res.send(user.name);
 
         if (userErr || !user) {
             return res.status(401).end();
         }
 
-      return next();
+        res.send(user.name);
+
+        return next();
     });
   });
 };

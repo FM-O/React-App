@@ -134,7 +134,7 @@ router.post('/login', (req, res, next) => {
       });
     }
 
-    return res.json({
+    return res.cookie('refreshToken', userData.refreshToken, {httpOnly: true}).json({
       success: true,
       message: 'You have successfully logged in!',
       token,

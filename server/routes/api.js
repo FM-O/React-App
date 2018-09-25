@@ -3,6 +3,15 @@ const express = require('express');
 const router = new express.Router();
 
 router.get('/dashboard', (req, res) => {
+  if (res.newAccessToken) {
+      return res.status(201).json({
+          token: res.token,
+          username: res.user.name,
+          socketId: res.user.socketId,
+          message: "You're authorized to see this secret message."
+      });
+  }
+
   res.status(200).json({
     username: res.user.name,
     socketId: res.user.socketId,

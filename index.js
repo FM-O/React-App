@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const passport = require('passport');
 const config = require('./config');
 const request = require('request');
+const cookieParser = require('cookie-parser');
 
 // Connect to the database and load models
 require('./server/models').connect(config.dbUri);
@@ -18,6 +19,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 // pass the passport middleware
 app.use(passport.initialize());
+
+// pass the cookieParser middleware
+app.use(cookieParser());
 
 // Load passport strategies
 const localSignupStrategy = require('./server/passport/local-signup');
@@ -45,7 +49,9 @@ app.use('/api', apiRoutes);
 
 //services
 const revokeUserService = require('./server/services/revoke-user');
+const generateAccessTokenService = require('./server/services/generate-access-token');
 app.use('/service/revoke-user', revokeUserService);
+app.use('/service/token', generateAccessTokenService);
 
 //specific routing
 // app.get("/*", (req, res) => {

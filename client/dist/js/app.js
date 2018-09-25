@@ -44018,8 +44018,18 @@ var DashboardPage = function (_React$Component) {
       xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
       // set the authorization HTTP header
       xhr.setRequestHeader('Authorization', 'bearer ' + _Auth2.default.getToken());
+      xhr.withCredentials = true;
       xhr.responseType = 'json';
       xhr.addEventListener('load', function () {
+        if (xhr.status === 201) {
+          _Auth2.default.authenticateUser(xhr.response.token);
+          _this2.setState({
+            socketId: xhr.response.socketId,
+            secretData: xhr.response.message,
+            username: xhr.response.username
+          });
+        }
+
         if (xhr.status === 200) {
           _this2.setState({
             socketId: xhr.response.socketId,
