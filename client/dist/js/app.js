@@ -39671,20 +39671,20 @@ var routes = {
   }, {
     path: '/logout',
     onEnter: function onEnter(nextState, replace) {
-      var socket = (0, _socket2.default)('192.168.0.19:3000');
+      var socket = (0, _socket2.default)('10.53.37.209:3000');
       var xhr = new XMLHttpRequest();
-      var formData = 'socketId=' + socket.id;
-      xhr.open('POST', '/api/logout', true);
+      xhr.open('get', '/api/logout');
       xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
       // set the authorization HTTP header
       xhr.setRequestHeader('Authorization', 'bearer ' + _Auth2.default.getToken());
+      xhr.withCredentials = true;
       xhr.responseType = 'json';
       xhr.addEventListener('load', function () {
         if (xhr.status === 200) {
-          socket.emit('USER_DISCONNECT', { username: xhr.response.name, socketId: xhr.response.socketId });
+          socket.emit('USER_DISCONNECT', { username: xhr.response.name });
         }
       });
-      xhr.send(formData);
+      xhr.send();
 
       // change the current URL to /
       _Auth2.default.deauthenticateUser();
@@ -44177,7 +44177,9 @@ var ChatPage = function (_React$Component) {
         //// WARNING: second instance of IO (already defined in LoginPage)
         //replace by the current host IP
         _this.bindEvents = function (nextProps) {
-            _this.socket = (0, _socket2.default)('192.168.0.19:3000', { query: 'socketId=' + nextProps.socketId + '&chatpage=true' });
+            var INTERVAL = null;
+
+            _this.socket = (0, _socket2.default)('10.53.37.209:3000', { query: 'socketId=' + _this.state.socketId + '&chatpage=true' });
 
             _this.socket.on('connect', function () {
                 var xhr = new XMLHttpRequest();
@@ -44186,10 +44188,18 @@ var ChatPage = function (_React$Component) {
                 xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
                 // set the authorization HTTP header
                 xhr.setRequestHeader('Authorization', 'bearer ' + _Auth2.default.getToken());
+                xhr.withCredentials = true;
                 xhr.responseType = 'json';
                 xhr.addEventListener('load', function () {
                     if (xhr.status === 200) {
-                        setInterval(function () {
+                        _this.socket.emit('HERE', { socket: _this.socket.id, token: _Auth2.default.getToken() });
+
+                        INTERVAL = setInterval(function () {
+                            if (!_Auth2.default.isUserAuthenticated()) {
+                                clearInterval(INTERVAL);
+                                _this.socket.emit('EXIT');
+                                return;
+                            }
                             _this.socket.emit('HERE', { socket: _this.socket.id, token: _Auth2.default.getToken() });
                         }, 5000);
                     }
@@ -44211,12 +44221,20 @@ var ChatPage = function (_React$Component) {
                 });
             });
 
-            _this.socket.on('USER_DISCONNECTED', function (username) {
+            _this.socket.on('USER_DISCONNECTED', function (data) {
                 addMessage({
-                    message: username + ' vient de se déconnecter',
+                    message: data.username + ' vient de se déconnecter (' + data.reason + ')',
                     type: 'server-message'
                 });
-                removeUserFromList(username);
+                removeUserFromList(data.username);
+            });
+
+            _this.socket.on('USER_TIMEOUT', function (data) {
+                addMessage({
+                    message: data.username + ' vient de se déconnecter (' + data.reason + ')',
+                    type: 'server-message'
+                });
+                removeUserFromList(data.username);
             });
         };
 
@@ -52648,7 +52666,7 @@ var LoginPage = function (_React$Component) {
       localStorage.removeItem('successMessage');
     }
 
-    _this.socket = (0, _socket2.default)('192.168.0.19:3000');
+    _this.socket = (0, _socket2.default)('10.53.37.209:3000');
 
     // set the initial component state
     _this.state = {

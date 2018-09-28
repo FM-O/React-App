@@ -73,30 +73,32 @@ io.on('connection', (socket, data) => {
         io.emit('RECEIVE_MESSAGE', data);
     });
 
-    if (socket.handshake.query.chatpage === 'true') {
-        TIMEOUT = setTimeout(() => {
-            console.log("END");
-        }, 10000);
-    }
-
     socket.on('HERE', (data) => {
         console.log(data);
         clearTimeout(TIMEOUT);
         TIMEOUT = setTimeout(() => {
-            request.get('http://192.168.0.19:3000/service/revoke-user', {json: true, headers: {'Authorization': `bearer ${data.token}`}}, (err, res, body) => {
+            console.log(data.socket);
+            request.post({url: 'http://10.53.37.209:3000/service/revoke-user', form: {socketId: data.socket}, json: true, headers: {'Authorization': `${config.apiKey}`}}, (err, res, body) => {
                 if (err) { return console.log("BIGERROR : " + err); }
+                if (res.statusCode === 401) { return console.log('requestError : ' + body) };
                 console.log(body);
+                io.emit('USER_TIMEOUT', {username: body, reason: 'ping timeout'});
             });
         }, 10000);
     });
 
+    socket.on('EXIT', () => {
+        clearTimeout(TIMEOUT);
+    });
+
     if (io.sockets.connected[socket.handshake.query.socketId] != undefined) {
+        console.log(socket.handshake.query);
+        console.log(io.sockets.connected[socket.handshake.query.socketId].id);
         io.sockets.connected[socket.handshake.query.socketId].disconnect();
     }
 
     socket.on('USER_DISCONNECT', (data) => {
-        io.emit('USER_DISCONNECTED', data.username);
-        io.to(data.socketId).emit('DISCONNECT_ME');
+        io.emit('USER_DISCONNECTED', {username: data.username, reason: 'client exited'});
     });
 
     socket.on('NEW_CONNECTION', (username) => {

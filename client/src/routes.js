@@ -34,20 +34,20 @@ const routes = {
     {
       path: '/logout',
       onEnter: (nextState, replace) => {
-        const socket = io('192.168.0.19:3000');
+        const socket = io('10.53.37.209:3000');
         const xhr = new XMLHttpRequest();
-        const formData = `socketId=${socket.id}`;
-        xhr.open('POST', '/api/logout', true);
+        xhr.open('get', '/api/logout');
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
         // set the authorization HTTP header
         xhr.setRequestHeader('Authorization', `bearer ${Auth.getToken()}`);
+        xhr.withCredentials = true;
         xhr.responseType = 'json';
         xhr.addEventListener('load', () => {
           if (xhr.status === 200) {
-            socket.emit('USER_DISCONNECT', {username: xhr.response.name, socketId: xhr.response.socketId});
+            socket.emit('USER_DISCONNECT', {username: xhr.response.name});
           }
         });
-        xhr.send(formData);
+        xhr.send();
 
         // change the current URL to /
         Auth.deauthenticateUser();

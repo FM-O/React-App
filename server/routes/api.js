@@ -29,10 +29,9 @@ router.post('/savesocket', (req, res) => {
   res.status(200).end();
 });
 
-router.post('/logout', (req, res) => {
+router.get('/logout', (req, res) => {
     res.status(200).json({
-      name: res.user.name,
-      socketId: res.socketId
+      name: res.user.name
     });
 });
 

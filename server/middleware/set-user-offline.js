@@ -10,9 +10,12 @@ module.exports = (req, res, next) => {
     return res.status(401).end();
   }
 
+  if (res.newAccessToken && res.token) {
+    req.headers.authorization = 'bearer ' + res.token;
+  }
+
   // get the last part from a authorization header string like "bearer token-value"
   const token = req.headers.authorization.split(' ')[1];
-  const socketId = req.body.socketId;
 
   // decode the token using a secret key-phrase
   return jwt.verify(token, config.jwtSecret, (err, decoded) => {
@@ -29,7 +32,6 @@ module.exports = (req, res, next) => {
             if (error) return done(error);
         });
         res.user = user;
-        res.socketId = socketId;
         if (userErr || !user) {
             return res.status(401).end();
         }

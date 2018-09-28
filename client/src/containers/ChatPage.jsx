@@ -33,7 +33,9 @@ class ChatPage extends React.Component {
         //// WARNING: second instance of IO (already defined in LoginPage)
         //replace by the current host IP
         this.bindEvents = (nextProps) => {
-            this.socket = io('192.168.0.19:3000', {query: `socketId=${nextProps.socketId}&chatpage=true`});
+            let INTERVAL = null;
+
+            this.socket = io('10.53.37.209:3000', {query: `socketId=${this.state.socketId}&chatpage=true`});
 
             this.socket.on('connect',() => {
                 const xhr = new XMLHttpRequest();
@@ -42,10 +44,18 @@ class ChatPage extends React.Component {
                 xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
                 // set the authorization HTTP header
                 xhr.setRequestHeader('Authorization', `bearer ${Auth.getToken()}`);
+                xhr.withCredentials = true;
                 xhr.responseType = 'json';
                 xhr.addEventListener('load', () => {
                   if (xhr.status === 200) {
-                    setInterval(() => {
+                    this.socket.emit('HERE', {socket: this.socket.id, token: Auth.getToken()});
+
+                    INTERVAL = setInterval(() => {
+                        if (!Auth.isUserAuthenticated()) {
+                            clearInterval(INTERVAL);
+                            this.socket.emit('EXIT');
+                            return;
+                        }
                         this.socket.emit('HERE', {socket: this.socket.id, token: Auth.getToken()});
                     }, 5000);
                   }
@@ -67,12 +77,20 @@ class ChatPage extends React.Component {
                 });
             });
 
-            this.socket.on('USER_DISCONNECTED', username => {
+            this.socket.on('USER_DISCONNECTED', data => {
                 addMessage({
-                    message: username + ' vient de se déconnecter',
+                    message: data.username + ' vient de se déconnecter (' + data.reason + ')',
                     type: 'server-message'
                 });
-                removeUserFromList(username);
+                removeUserFromList(data.username);
+            });
+
+            this.socket.on('USER_TIMEOUT', data => {
+                addMessage({
+                    message: data.username + ' vient de se déconnecter (' + data.reason + ')',
+                    type: 'server-message'
+                });
+                removeUserFromList(data.username);
             });
         }
 
