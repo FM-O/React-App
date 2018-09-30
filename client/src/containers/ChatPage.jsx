@@ -1,5 +1,6 @@
 import React from 'react';
 import Chat from '../components/Chat.jsx';
+import PropTypes from 'prop-types';
 import Auth from '../modules/Auth';
 import io from 'socket.io-client';
 
@@ -8,8 +9,8 @@ class ChatPage extends React.Component {
     /**
     * Class constructor.
     */
-    constructor(props) {
-        super(props);
+    constructor(props, context) {
+        super(props, context);
 
         let errorTimeout = null;
 
@@ -35,7 +36,7 @@ class ChatPage extends React.Component {
         this.bindEvents = (nextProps) => {
             let INTERVAL = null;
 
-            this.socket = io('10.53.37.209:3000', {query: `socketId=${this.state.socketId}&chatpage=true`});
+            this.socket = io('192.168.0.19:3000', {query: `socketId=${this.state.socketId}&chatpage=true`});
 
             this.socket.on('connect',() => {
                 const xhr = new XMLHttpRequest();
@@ -58,7 +59,11 @@ class ChatPage extends React.Component {
                         }
                         this.socket.emit('HERE', {socket: this.socket.id, token: Auth.getToken()});
                     }, 5000);
-                  }
+                } else {
+                    this.socket.disconnect();
+                    Auth.deauthenticateUser();
+                    this.context.router.replace('/');
+                }
                 });
                 xhr.send(data);
             });
@@ -210,5 +215,9 @@ class ChatPage extends React.Component {
             onSendMessage={this.sendMessage}/>);
     }
 }
+
+ChatPage.contextTypes = {
+  router: PropTypes.object.isRequired
+};
 
 export default ChatPage;

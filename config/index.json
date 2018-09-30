@@ -1,6 +1,6 @@
 {
   "dbUri": "mongodb://flo-69250:kohjb928_@cluster0-shard-00-00-3wqq0.mongodb.net:27017,cluster0-shard-00-01-3wqq0.mongodb.net:27017,cluster0-shard-00-02-3wqq0.mongodb.net:27017/test?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin",
   "jwtSecret": "a secret phrase!!",
-  "host": "10.53.37.209:3000",
+  "host": "192.168.0.19:3000",
   "apiKey": "AQWI0OPMJW92QDO8OCZAwnuklmcwILWH"
 }

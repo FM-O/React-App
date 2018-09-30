@@ -13,4 +13,5 @@ module.exports.connect = (uri) => {
   // load models
   require('./user');
   require('./services');
+  require('./token-blacklist');
 }

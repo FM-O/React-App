@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const User = require('mongoose').model('User');
 const Services = require('mongoose').model('Services');
+const TokenBlacklist = require('mongoose').model('TokenBlacklist');
 const config = require('../../config');
 
 /**
@@ -25,17 +26,25 @@ module.exports = (req, res, next) => {
                 return res.status(401).end();
             }
             user.online = false;
+            user.refreshToken = '';
             user.save((error) => {
                 if (error) return res.status(400).end();
             });
 
-            res.send(user.name);
+            const blacklistedToken = new TokenBlacklist({token: req.body.token});
 
-            return next();
+            blacklistedToken.save((err) => {
+                if (err) { return res.status(401).end(); }
+
+                res.send(user.name);
+
+                return next();
+            });
         });
     });
   }
 
+  // Will be the part for admin request (not server request)
   // decode the token using a secret key-phrase
   return jwt.verify(token, config.jwtSecret, (err, decoded) => {
     // the 401 code is for unauthorized status

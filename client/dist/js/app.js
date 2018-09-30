@@ -39671,7 +39671,7 @@ var routes = {
   }, {
     path: '/logout',
     onEnter: function onEnter(nextState, replace) {
-      var socket = (0, _socket2.default)('10.53.37.209:3000');
+      var socket = (0, _socket2.default)('192.168.0.19:3000');
       var xhr = new XMLHttpRequest();
       xhr.open('get', '/api/logout');
       xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -44126,6 +44126,10 @@ var _Chat = __webpack_require__(318);
 
 var _Chat2 = _interopRequireDefault(_Chat);
 
+var _propTypes = __webpack_require__(2);
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
 var _Auth = __webpack_require__(47);
 
 var _Auth2 = _interopRequireDefault(_Auth);
@@ -44150,10 +44154,10 @@ var ChatPage = function (_React$Component) {
     /**
     * Class constructor.
     */
-    function ChatPage(props) {
+    function ChatPage(props, context) {
         _classCallCheck(this, ChatPage);
 
-        var _this = _possibleConstructorReturn(this, (ChatPage.__proto__ || Object.getPrototypeOf(ChatPage)).call(this, props));
+        var _this = _possibleConstructorReturn(this, (ChatPage.__proto__ || Object.getPrototypeOf(ChatPage)).call(this, props, context));
 
         var errorTimeout = null;
 
@@ -44179,7 +44183,7 @@ var ChatPage = function (_React$Component) {
         _this.bindEvents = function (nextProps) {
             var INTERVAL = null;
 
-            _this.socket = (0, _socket2.default)('10.53.37.209:3000', { query: 'socketId=' + _this.state.socketId + '&chatpage=true' });
+            _this.socket = (0, _socket2.default)('192.168.0.19:3000', { query: 'socketId=' + _this.state.socketId + '&chatpage=true' });
 
             _this.socket.on('connect', function () {
                 var xhr = new XMLHttpRequest();
@@ -44202,6 +44206,10 @@ var ChatPage = function (_React$Component) {
                             }
                             _this.socket.emit('HERE', { socket: _this.socket.id, token: _Auth2.default.getToken() });
                         }, 5000);
+                    } else {
+                        _this.socket.disconnect();
+                        _Auth2.default.deauthenticateUser();
+                        _this.context.router.replace('/');
                     }
                 });
                 xhr.send(data);
@@ -44372,6 +44380,10 @@ var ChatPage = function (_React$Component) {
 
     return ChatPage;
 }(_react2.default.Component);
+
+ChatPage.contextTypes = {
+    router: _propTypes2.default.object.isRequired
+};
 
 exports.default = ChatPage;
 
@@ -52666,7 +52678,7 @@ var LoginPage = function (_React$Component) {
       localStorage.removeItem('successMessage');
     }
 
-    _this.socket = (0, _socket2.default)('10.53.37.209:3000');
+    _this.socket = (0, _socket2.default)('192.168.0.19:3000');
 
     // set the initial component state
     _this.state = {
