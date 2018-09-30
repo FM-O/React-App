@@ -54,10 +54,9 @@ app.use('/service/revoke-user', revokeUserService);
 app.use('/service/token', generateAccessTokenService);
 
 //specific routing
-// app.get("/*", (req, res) => {
-//     console.log("ok1");
-//   res.send(__dirname + '/server/static/index.html');
-// });
+app.get("/*", (req, res) => {
+    res.send(__dirname + '/server/static/index.html');
+});
 
 // start the server
 const server = app.listen(3000, () => {
