@@ -55,7 +55,7 @@ app.use('/service/token', generateAccessTokenService);
 
 //specific routing
 app.get("/*", (req, res) => {
-    res.send(__dirname + '/server/static/index.html');
+    res.sendFile(__dirname + '/server/static/index.html');
 });
 
 // start the server

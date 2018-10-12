@@ -39,6 +39,28 @@ a:hover {
   text-align: center;
   width: 100%; }
 
+#home .success-message,
+#home .error-message {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  transform: translateY(calc(100% + 4px));
+  transition: transform .5s ease;
+  margin: 0;
+  padding: 20px 0;
+  box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.6);
+  color: white; }
+  #home .success-message.animate,
+  #home .error-message.animate {
+    transform: translateY(0); }
+
+#home .success-message {
+  background: #62bb74; }
+
+#home .error-message {
+  background: #e67575; }
+
 .card-heading {
   padding: 16px; }
 

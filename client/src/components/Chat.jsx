@@ -38,7 +38,7 @@ const Chat = ({popoverProps, styles, users, message, messages, onChangeInput, on
                 </div>
               </div>
               <div className="card-footer">
-                  <Popover
+                <Popover
                     className='popover'
                     open={popoverProps.open}
                     anchorEl={popoverProps.anchorEl}

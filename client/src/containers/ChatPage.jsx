@@ -62,7 +62,10 @@ class ChatPage extends React.Component {
                 } else {
                     this.socket.disconnect();
                     Auth.deauthenticateUser();
-                    this.context.router.replace('/');
+                    this.context.router.replace({
+                        pathname: '/',
+                        state: {reason: 'timeout'}
+                    });
                 }
                 });
                 xhr.send(data);
