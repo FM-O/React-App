@@ -24,7 +24,7 @@ module.exports = (req, res, next) => {
                 return res.status(401).end();
 
             if (req.cookies['refreshToken']) {
-                return request.get('http://192.168.0.19:3000/service/token', {json: true, headers: {'Authorization': `${req.cookies['refreshToken']}`}}, (err, result, body) => {
+                return request.get('http://10.53.37.215:3000/service/token', {json: true, headers: {'Authorization': `${req.cookies['refreshToken']}`}}, (err, result, body) => {
                     if (err) { return console.log("BIGERROR : " + err); }
 
                     if (result.statusCode === 401) {
@@ -52,6 +52,7 @@ module.exports = (req, res, next) => {
 
             //if token is valid continue
             const userId = decoded.sub;
+            console.log(decoded);
 
             // check if a user exists
             return User.findById(userId, (userErr, user) => {

@@ -1,4 +1,4 @@
-import Base from './components/Base.jsx';
+import Base from './containers/BaseContainer.jsx';
 import HomePage from './containers/HomePage.jsx';
 import DashboardPage from './containers/DashboardPage.jsx';
 import LoginPage from './containers/LoginPage.jsx';
@@ -34,7 +34,7 @@ const routes = {
     {
       path: '/logout',
       onEnter: (nextState, replace) => {
-        const socket = io('192.168.0.19:3000');
+        const socket = io('10.53.37.215:3000');
         const xhr = new XMLHttpRequest();
         xhr.open('get', '/api/logout');
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');

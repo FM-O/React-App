@@ -12,7 +12,8 @@ const UserSchema = new mongoose.Schema({
   socketId: String,
   online: Boolean,
   password: String,
-  name: String
+  name: String,
+  isAdmin: Boolean
 });
 
 /**

@@ -20,6 +20,7 @@ module.exports = (req, res, next) => {
 
         const payload = {
           sub: user._id,
+          admin: user.isAdmin,
           exp: Math.floor(Date.now() / 1000) + (30)
         };
 

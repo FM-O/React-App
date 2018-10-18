@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Link, IndexLink } from 'react-router';
 import Auth from '../modules/Auth';
 
-const Base = ({ children }) => (
+const Base = ({ children, isAdmin }) => (
   <div>
     <div className="top-bar">
       <div className="top-bar-left">
@@ -13,6 +13,7 @@ const Base = ({ children }) => (
       {Auth.isUserAuthenticated() ? (
         <div className="top-bar-right">
           <Link to="/logout">Logout</Link>
+          {isAdmin && (<Link to="/admin">Admin</Link>) }
         </div>
       ) : (
         <div className="top-bar-right">
@@ -29,7 +30,7 @@ const Base = ({ children }) => (
 );
 
 Base.propTypes = {
-  children: PropTypes.object.isRequired
+  children: PropTypes.array.isRequired
 };
 
 export default Base;

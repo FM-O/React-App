@@ -49,6 +49,7 @@ module.exports = new PassportLocalStrategy({
 
       const payload = {
         sub: user._id,
+        admin: user.isAdmin,
         exp: Math.floor(Date.now() / 1000) + (30)
       };
 
