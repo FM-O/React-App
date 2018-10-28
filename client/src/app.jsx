@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDom from 'react-dom';
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import { browserHistory, Router } from 'react-router';
 import routes from './routes.js';
 
@@ -9,6 +8,6 @@ import routes from './routes.js';
 require('../../server/static/scss/main.scss');
 
 ReactDom.render((
-  <MuiThemeProvider muiTheme={getMuiTheme()}>
+  <MuiThemeProvider theme={createMuiTheme()}>
     <Router history={browserHistory} routes={routes} />
   </MuiThemeProvider>), document.getElementById('react-app'));

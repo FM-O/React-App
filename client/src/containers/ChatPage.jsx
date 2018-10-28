@@ -36,7 +36,7 @@ class ChatPage extends React.Component {
         this.bindEvents = (nextProps) => {
             let INTERVAL = null;
 
-            this.socket = io('10.53.37.215:3000', {query: `socketId=${this.state.socketId}&chatpage=true`});
+            this.socket = io('192.168.0.19:3000', {query: `socketId=${this.state.socketId}&chatpage=true`});
 
             this.socket.on('connect',() => {
                 const xhr = new XMLHttpRequest();

@@ -34,7 +34,7 @@ const routes = {
     {
       path: '/logout',
       onEnter: (nextState, replace) => {
-        const socket = io('10.53.37.215:3000');
+        const socket = io('192.168.0.19:3000');
         const xhr = new XMLHttpRequest();
         xhr.open('get', '/api/logout');
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -45,13 +45,13 @@ const routes = {
         xhr.addEventListener('load', () => {
           if (xhr.status === 200) {
             socket.emit('USER_DISCONNECT', {username: xhr.response.name});
+            socket.disconnect();
           }
         });
         xhr.send();
 
         // change the current URL to /
         Auth.deauthenticateUser();
-        socket.disconnect();
         replace({
             pathname: '/',
             state: {reason: 'logout'}

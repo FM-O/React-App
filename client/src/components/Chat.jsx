@@ -1,12 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Card, CardTitle, CardText } from 'material-ui/Card';
-import Input from 'material-ui/TextField';
-import Popover from 'material-ui/Popover';
+import Card from '@material-ui/core/Card';
+import Input from '@material-ui/core/TextField';
+import Popover from '@material-ui/core/Popover';
+import Typography from '@material-ui/core/Typography';
 
 const Chat = ({popoverProps, styles, users, message, messages, onChangeInput, onChangeMessage, onKeyPressMessage, onSendMessage }) => (
   <Card className="container">
-    <CardTitle title="Chat" subtitle="You should get accesss to chat only after authentication."/>
+    <Typography gutterBottom color="primary" variant="title" component="h3">
+        You should get accesss to chat only after authentication.
+    </Typography>
     <div className="container">
         <div className="row">
           <div className="col-4">
@@ -48,7 +51,7 @@ const Chat = ({popoverProps, styles, users, message, messages, onChangeInput, on
                     }}
                     transformOrigin={{
                     vertical: 'bottom',
-                    horizontal: 'middle',
+                    horizontal: 'center',
                     }}
                     >
                     <div className='popover__content'>{popoverProps.content}</div>

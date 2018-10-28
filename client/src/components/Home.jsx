@@ -1,11 +1,19 @@
 import React from 'react';
-import { Card, CardTitle } from 'material-ui/Card';
+import Card from '@material-ui/core/Card';
+import Typography from '@material-ui/core/Typography';
 
 
 const Home = ({ notification }) => (
   <Card id="home" className="container">
     {notification && <p className={notification.type}>{notification.message}</p>}
-    <CardTitle title="React Application" subtitle="This is the home page" />
+    <div>
+        <Typography gutterBottom color="primary" variant="title" component="h1">
+            React Application
+        </Typography>
+        <Typography gutterBottom color="primary" variant="subheading" component="h2">
+            This is the home page
+        </Typography>
+    </div>
   </Card>
 );
 

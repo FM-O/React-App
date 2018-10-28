@@ -77,7 +77,7 @@ io.on('connection', (socket, data) => {
         clearTimeout(TIMEOUT);
         TIMEOUT = setTimeout(() => {
             console.log(data.socket);
-            request.post({url: 'http://10.53.37.215:3000/service/revoke-user', form: {socketId: data.socket, token: data.token}, json: true, headers: {'Authorization': `${config.apiKey}`}}, (err, res, body) => {
+            request.post({url: 'http://192.168.0.19:3000/service/revoke-user', form: {socketId: data.socket, token: data.token}, json: true, headers: {'Authorization': `${config.apiKey}`}}, (err, res, body) => {
                 if (err) { return console.log("BIGERROR : " + err); }
                 if (res.statusCode === 401) { return console.log('requestError : ' + body) };
                 console.log(body);
@@ -97,6 +97,7 @@ io.on('connection', (socket, data) => {
     }
 
     socket.on('USER_DISCONNECT', (data) => {
+        console.log("passing through");
         io.emit('USER_DISCONNECTED', {username: data.username, reason: 'client exited'});
     });
 
